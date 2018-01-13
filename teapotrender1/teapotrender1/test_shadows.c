@@ -76,6 +76,8 @@ for glut.h, glew.h, etc. with something like:
 #   endif //__EMSCRIPTEN__
 #endif //__FREEGLUT_STD_H__
 
+#include "reader.h"
+
 
 #include <stdio.h>
 #include <math.h>
@@ -101,6 +103,7 @@ for glut.h, glew.h, etc. with something like:
 // Optional local definitions
 #define VISUALIZE_DEPTH_TEXTURE // requires the ffp (does not work in WebGL)
 //#define TEST_ADD_USER_MESH    // try it!
+Reader::Reader obj;
 
 // Config file handling: basically there's an .ini file next to the
 // exe that you can tweak. (it's just an extra)
@@ -203,7 +206,8 @@ float vMatrix[16];          // view matrix
 float cameraSpeed = 0.5f;   // When moving it
 
 // light data
-float lightDirection[3] = {1,2,1.5};// Will be normalized
+//float lightDirection[3] = { 1,2,1.5 };// Will be normalized
+float lightDirection[3] = { 0,0,0 };// Will be normalized
 
 // pMatrix data:
 float pMatrix[16];                  // projection matrix
@@ -401,7 +405,7 @@ void InitGL(void) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  // Otherwise transparent objects are not displayed correctly
-    glClearColor(0.3f, 0.6f, 1.0f, 1.0f);
+    glClearColor(0.3f, 0.6f, 1.0f, 1.0f); //BACKGROUND
     glEnable(GL_TEXTURE_2D);    // Only needed for ffp, when VISUALIZE_DEPTH_TEXTURE is defined
 
 #   ifdef TEAPOT_SHADER_FOG
@@ -454,14 +458,14 @@ void InitGL(void) {
         Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TEAPOT);
         Teapot_MeshData_SetOutlineEnabled(md,0);
 
-        // (bunny)
-        md = pMeshData[i++];
-        mMatrix[12]=-0.5;    mMatrix[13]=0.0;    mMatrix[14]=1.0;
-        Teapot_MeshData_SetMMatrix(md,mMatrix);
-        Teapot_MeshData_SetScaling(md,1.f,1.f,1.f);
-        Teapot_MeshData_SetColor(md,0.2f,0.4f,0.9f,1.0f);
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_BUNNY);
-        Teapot_MeshData_SetOutlineEnabled(md,0);
+        //// (bunny)
+        //md = pMeshData[i++];
+        //mMatrix[12]=-0.5;    mMatrix[13]=0.0;    mMatrix[14]=1.0;
+        //Teapot_MeshData_SetMMatrix(md,mMatrix);
+        //Teapot_MeshData_SetScaling(md,1.f,1.f,1.f);
+        //Teapot_MeshData_SetColor(md,0.2f,0.4f,0.9f,1.0f);
+        //Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_BUNNY);
+        //Teapot_MeshData_SetOutlineEnabled(md,0);
 
         // (teapot)
         md = pMeshData[i++];
@@ -479,17 +483,17 @@ void InitGL(void) {
         Teapot_MeshData_SetColor(md,0.3f,0.5f,1.0f,0.5f);
         Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_GHOST);
 
-        // (character)
-        md = pMeshData[i++];
-        mMatrix[12]=-0.375;    mMatrix[13]=0.0;    mMatrix[14]=-0.35;
-        Teapot_MeshData_SetMMatrix(md,mMatrix);
-        Teapot_MeshData_SetScaling(md,1.f,1.f,1.f);
-        Teapot_MeshData_SetColor(md,1.0f,0.8f,0.25f,1.0f);
-#       ifdef TEST_ADD_USER_MESH
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_USER_00);
-#       else
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CHARACTER);
-#       endif
+//        // (character)
+//        md = pMeshData[i++];
+//        mMatrix[12]=-0.375;    mMatrix[13]=0.0;    mMatrix[14]=-0.35;
+//        Teapot_MeshData_SetMMatrix(md,mMatrix);
+//        Teapot_MeshData_SetScaling(md,1.f,1.f,1.f);
+//        Teapot_MeshData_SetColor(md,1.0f,0.8f,0.25f,1.0f);
+//#       ifdef TEST_ADD_USER_MESH
+//        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_USER_00);
+//#       else
+//        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CHARACTER);
+//#       endif
 
         // (torus)
         md = pMeshData[i++];
@@ -507,33 +511,33 @@ void InitGL(void) {
         Teapot_MeshData_SetMMatrix(md,mMatrix);
         Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TABLE);
 
-        // (chairs)
-        {
-            int j;
-            for (j=0;j<3;j++) {
-                md = pMeshData[i++];
-                Teapot_MeshData_SetScaling(md,0.5f,0.5f,0.5f);
-                Teapot_MeshData_SetColor(md,0.5f,0.2f,0.1f,1.0f);
-                mMatrix[13]=0.0;    mMatrix[14]=-1.3;
-                mMatrix[12]=-1.25f+(float)(j-1)*0.45;
-                Teapot_MeshData_SetMMatrix(md,mMatrix);
-                Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CHAIR);
-            }
-            // With these 2 lines, we can achieve a 180° rotation for free
-            mMatrix[8]=-mMatrix[8];mMatrix[9]=-mMatrix[9];mMatrix[10]=-mMatrix[10];
-            mMatrix[0]=-mMatrix[0];mMatrix[1]=-mMatrix[1];mMatrix[2]=-mMatrix[2];
-            for (j=0;j<3;j++) {
-                md = pMeshData[i++];
-                Teapot_MeshData_SetScaling(md,0.5f,0.5f,0.5f);
-                Teapot_MeshData_SetColor(md,0.5f,0.2f,0.1f,1.0f);
-                mMatrix[13]=0.0;    mMatrix[14]=-0.7;
-                mMatrix[12]=-1.25f+(float)(j-1)*0.45;
-                Teapot_MeshData_SetMMatrix(md,mMatrix);
-                Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CHAIR);
-            }
-            mMatrix[0]=-mMatrix[0];mMatrix[1]=-mMatrix[1];mMatrix[2]=-mMatrix[2];
-            mMatrix[8]=-mMatrix[8];mMatrix[9]=-mMatrix[9];mMatrix[10]=-mMatrix[10];
-        }
+        //// (chairs)
+        //{
+        //    int j;
+        //    for (j=0;j<3;j++) {
+        //        md = pMeshData[i++];
+        //        Teapot_MeshData_SetScaling(md,0.5f,0.5f,0.5f);
+        //        Teapot_MeshData_SetColor(md,0.5f,0.2f,0.1f,1.0f);
+        //        mMatrix[13]=0.0;    mMatrix[14]=-1.3;
+        //        mMatrix[12]=-1.25f+(float)(j-1)*0.45;
+        //        Teapot_MeshData_SetMMatrix(md,mMatrix);
+        //        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CHAIR);
+        //    }
+        //    // With these 2 lines, we can achieve a 180° rotation for free
+        //    mMatrix[8]=-mMatrix[8];mMatrix[9]=-mMatrix[9];mMatrix[10]=-mMatrix[10];
+        //    mMatrix[0]=-mMatrix[0];mMatrix[1]=-mMatrix[1];mMatrix[2]=-mMatrix[2];
+        //    for (j=0;j<3;j++) {
+        //        md = pMeshData[i++];
+        //        Teapot_MeshData_SetScaling(md,0.5f,0.5f,0.5f);
+        //        Teapot_MeshData_SetColor(md,0.5f,0.2f,0.1f,1.0f);
+        //        mMatrix[13]=0.0;    mMatrix[14]=-0.7;
+        //        mMatrix[12]=-1.25f+(float)(j-1)*0.45;
+        //        Teapot_MeshData_SetMMatrix(md,mMatrix);
+        //        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CHAIR);
+        //    }
+        //    mMatrix[0]=-mMatrix[0];mMatrix[1]=-mMatrix[1];mMatrix[2]=-mMatrix[2];
+        //    mMatrix[8]=-mMatrix[8];mMatrix[9]=-mMatrix[9];mMatrix[10]=-mMatrix[10];
+        //}
 
         // (teapot)
         md = pMeshData[i++];
@@ -1078,6 +1082,8 @@ int main(int argc, char** argv)
 
     GlutCreateWindow();
 
+	obj.load("cube.obj");
+
     //OpenGL info
     printf("\nGL Vendor: %s\n", glGetString( GL_VENDOR ));
     printf("GL Renderer : %s\n", glGetString( GL_RENDERER ));
@@ -1233,3 +1239,5 @@ void Teapot_Init_User_Mesh_Callback(TeapotMeshEnum meshId,const float** ppverts,
     }
 }
 #endif //TEST_ADD_USER_MESH
+
+

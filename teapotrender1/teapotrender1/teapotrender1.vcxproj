@@ -21,10 +21,12 @@
   <ItemGroup>
     <ClInclude Include="dynamic_resolution.h" />
     <ClInclude Include="im_matrix_stack.h" />
+    <ClInclude Include="Reader.h" />
     <ClInclude Include="sdf.h" />
     <ClInclude Include="teapot.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Reader.cpp" />
     <ClCompile Include="test_shadows.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

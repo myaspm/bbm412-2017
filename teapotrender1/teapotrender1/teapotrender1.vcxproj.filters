@@ -27,9 +27,15 @@
     <ClInclude Include="teapot.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test_shadows.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

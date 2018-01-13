@@ -1,2 +1,112 @@
-﻿  teapotrender1.vcxproj -> c:\users\rabia\documents\visual studio 2015\Projects\teapotrender1\Debug\teapotrender1.exe
-  teapotrender1.vcxproj -> c:\users\rabia\documents\visual studio 2015\Projects\teapotrender1\Debug\teapotrender1.pdb (Full PDB)
+﻿  test_shadows.c
+d:\github\bbm412-2017\teapotrender1\teapotrender1\dynamic_resolution.h(390): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\dynamic_resolution.h(742): warning C4244: 'function': conversion from 'int' to 'GLfloat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(349): warning C4244: '=': conversion from 'double' to 'tpoat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(710): warning C4244: '=': conversion from 'double' to 'tpoat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(767): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1040): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1044): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1048): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1274): warning C4244: 'return': conversion from 'const tpoat' to 'int', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1492): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1516): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1517): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1830): warning C4305: 'function': truncation from 'double' to 'float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1809): warning C4305: 'initializing': truncation from 'double' to 'const tpoat'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1810): warning C4305: 'initializing': truncation from 'double' to 'const tpoat'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1866): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1867): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1868): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1869): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1870): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1871): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1872): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1873): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1874): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1875): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1876): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1877): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1878): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1880): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1954): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(1956): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2054): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2055): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2056): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2057): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2059): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2093): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2094): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2117): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2118): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2119): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2120): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2121): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2157): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2158): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2159): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2160): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2192): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2193): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2213): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2214): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2244): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2245): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2264): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2265): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2266): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2267): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2268): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2332): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2350): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2368): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2383): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2384): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2429): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2448): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2449): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2450): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2451): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2452): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2485): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2517): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2518): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2519): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2520): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2539): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2540): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2541): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2578): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2579): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2604): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2605): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2620): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2621): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2635): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\teapot.h(2636): warning C4305: 'initializing': truncation from 'double' to 'const float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(220): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(288): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(292): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(296): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(325): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(392): warning C4244: 'function': conversion from 'int' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(497): warning C4305: '=': truncation from 'double' to 'float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(757): warning C4305: 'function': truncation from 'double' to 'float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(815): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(816): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(817): warning C4244: 'function': conversion from 'double' to 'GLfloat', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(596): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(597): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(623): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(883): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(885): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(881): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(882): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(891): warning C4305: '=': truncation from 'double' to 'float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(892): warning C4305: '=': truncation from 'double' to 'float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(906): warning C4305: '-=': truncation from 'double' to 'float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(907): warning C4305: '+=': truncation from 'double' to 'float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(912): warning C4305: '=': truncation from 'double' to 'float'
+d:\github\bbm412-2017\teapotrender1\teapotrender1\test_shadows.c(913): warning C4305: '=': truncation from 'double' to 'float'
+  teapotrender1.vcxproj -> D:\GitHub\bbm412-2017\teapotrender1\Debug\teapotrender1.exe
+  teapotrender1.vcxproj -> D:\GitHub\bbm412-2017\teapotrender1\Debug\teapotrender1.pdb (Full PDB)
