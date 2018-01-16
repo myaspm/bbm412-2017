@@ -1,61 +1,15 @@
-/** License
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
-*/
-
-// DEPENDENCIES:
-/*
--> glut or freeglut (the latter is recommended)
--> glew (Windows only)
-*/
-
-// HOW TO COMPILE:
-/*
-// LINUX:
-gcc -O2 -std=gnu89 test_shadows.c -o test_shadows -I"../" -lglut -lGL -lX11 -lm
-// WINDOWS (here we use the static version of glew, and glut32.lib, that can be replaced by freeglut.lib):
-cl /O2 /MT /Tc test_shadows.c /D"TEAPOT_NO_RESTRICT" /D"DYNAMIC_RESOLUTION_NO_RESTRICT" /D"GLEW_STATIC" /I"../" /link /out:test_shadows.exe glut32.lib glew32s.lib opengl32.lib gdi32.lib Shell32.lib comdlg32.lib user32.lib kernel32.lib
-// EMSCRIPTEN:
-emcc -O2 -std=gnu89 -fno-rtti -fno-exceptions -o test_shadows.html test_shadows.c -I"./" -I"../" -s LEGACY_GL_EMULATION=0 --closure 1
-(for web assembly add: -s WASM=1)
-
-// IN ADDITION:
-By default the source file assumes that every OpenGL-related header is in "GL/".
-But you can define in the command-line the correct paths you use in your system
-for glut.h, glew.h, etc. with something like:
--DGLUT_PATH=\"Glut/glut.h\"
--DGLEW_PATH=\"Glew/glew.h\"
-(this syntax works on Linux, don't know about Windows)
-*/
-
-//#define USE_GLEW  // By default it's only defined for Windows builds (but can be defined in Linux/Mac builds too)
-
 #ifdef __EMSCRIPTEN__
 #	undef USE_GLEW
 #endif //__EMSCRIPTEN__
 
-// These path definitions can be passed to the compiler command-line
 #ifndef GLUT_PATH
-#   define GLUT_PATH "glut.h"    // Mandatory
+#   define GLUT_PATH "glut.h"  
 #endif //GLEW_PATH
 #ifndef FREEGLUT_EXT_PATH
-#   define FREEGLUT_EXT_PATH "freeglut_ext.h"    // Optional (used only if glut.h comes from the freeglut library)
+#   define FREEGLUT_EXT_PATH "freeglut_ext.h"    
 #endif //GLEW_PATH
 #ifndef GLEW_PATH
-#   define GLEW_PATH "glew.h"    // Mandatory for Windows only
+#   define GLEW_PATH "glew.h"    
 #endif //GLEW_PATH
 
 #ifdef _WIN32
@@ -76,37 +30,26 @@ for glut.h, glew.h, etc. with something like:
 #   endif //__EMSCRIPTEN__
 #endif //__FREEGLUT_STD_H__
 
-#include "reader.h"
-
 
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 
-// "dynamic_resolution.h" implements the first shadow mapping step and optionally dynamic resolution (that by default should keep frame rate > config.dynamic_resolution_target_fps)
-//#define DYNAMIC_RESOLUTION_USE_GLSL_VERSION_330   // (Optional) Not sure it's faster...
-#define DYNAMIC_RESOLUTION_IMPLEMENTATION           // Mandatory in 1 source file (.c or .cpp)
+#define DYNAMIC_RESOLUTION_IMPLEMENTATION
 #include "dynamic_resolution.h"
 
 
-#define TEAPOT_CENTER_MESHES_ON_FLOOR           // (Optional) Otherwise meshes are centered in their local aabb center
-//#define TEAPOT_INVERT_MESHES_Z_AXIS           // (Optional) Otherwise meshes look in the opposite Z direction
-#define TEAPOT_SHADER_SPECULAR                  // (Optional) specular hilights
-#define TEAPOT_SHADER_FOG                       // (Optional) fog to remove bad clipping
-#define TEAPOT_SHADER_FOG_HINT_FRAGMENT_SHADER	// (Optional) better fog quality
-#define TEAPOT_SHADER_USE_SHADOW_MAP            // Mandatory for implementing the second shadow mapping step, but can be disabled in this demo
-#define TEAPOT_ENABLE_FRUSTUM_CULLING           // (Optional) a bit expensive, and does not cull 100% hidden objects. You'd better test if it works and if it's faster...
-#define TEAPOT_IMPLEMENTATION                   // Mandatory in 1 source file (.c or .cpp)
+#define TEAPOT_CENTER_MESHES_ON_FLOOR          
+#define TEAPOT_SHADER_SPECULAR               
+#define TEAPOT_SHADER_FOG                      
+#define TEAPOT_SHADER_FOG_HINT_FRAGMENT_SHADER	
+#define TEAPOT_SHADER_USE_SHADOW_MAP           
+#define TEAPOT_ENABLE_FRUSTUM_CULLING      
+#define TEAPOT_IMPLEMENTATION                  
 #include "teapot.h"
 
+#define VISUALIZE_DEPTH_TEXTURE 
 
-// Optional local definitions
-#define VISUALIZE_DEPTH_TEXTURE // requires the ffp (does not work in WebGL)
-//#define TEST_ADD_USER_MESH    // try it!
-Reader::Reader obj;
-
-// Config file handling: basically there's an .ini file next to the
-// exe that you can tweak. (it's just an extra)
 const char* ConfigFileName = "test_shadows.ini";
 typedef struct {
     int fullscreen_width,fullscreen_height;
@@ -187,27 +130,25 @@ int Config_Save(Config* c,const char* filePath)  {
     fclose(f);
     return 0;
 }
-#endif //__EMSCRIPTEN__
+#endif 
 Config config;
 
-// glut has a special fullscreen GameMode that you can toggle with CTRL+RETURN (not in WebGL)
-int windowId = 0; 			// window Id when not in fullscreen mode
-int gameModeWindowId = 0;	// window Id when in fullscreen mode
+int windowId = 0; 			
+int gameModeWindowId = 0;	
 
-// Now we can start with our program
 
-// camera data:
-float targetPos[3];         // please set it in resetCamera()
-float cameraYaw;            // please set it in resetCamera()
-float cameraPitch;          // please set it in resetCamera()
-float cameraDistance;       // please set it in resetCamera()
-float cameraPos[3];         // Derived value (do not edit)
-float vMatrix[16];          // view matrix
-float cameraSpeed = 0.5f;   // When moving it
+// camera data
+float targetPos[3];         
+float cameraYaw;            
+float cameraPitch;          
+float cameraDistance;       
+float cameraPos[3];         
+float vMatrix[16];          
+float cameraSpeed = 0.5f;   
 
 // light data
-//float lightDirection[3] = { 1,2,1.5 };// Will be normalized
-float lightDirection[3] = { 0,0,0 };// Will be normalized
+float lightDirection[3] = { 1,2,1.5 };// LIGHT
+//float lightDirection[3] = { 0,0,0 };// DARK
 
 // pMatrix data:
 float pMatrix[16];                  // projection matrix
@@ -217,10 +158,9 @@ const float pMatrixFarPlane = 20.0f;
 
 float instantFrameTime = 16.2f;
 
-// custom replacement of gluPerspective(...)
 static void Perspective(float res[16],float degfovy,float aspect, float zNear, float zFar) {
     const float eps = 0.0001f;
-    float f = 1.f/tan(degfovy*1.5707963268f/180.0); //cotg
+    float f = 1.f/tan(degfovy*1.5707963268f/180.0); 
     float Dfn = (zFar-zNear);
     if (Dfn==0) {zFar+=eps;zNear-=eps;Dfn=zFar-zNear;}
     if (aspect==0) aspect = 1.f;
@@ -245,7 +185,7 @@ static void Perspective(float res[16],float degfovy,float aspect, float zNear, f
     res[14] = -2.f*zFar*zNear/Dfn;
     res[15] = 0;
 }
-// custom replacement of glOrtho(...)
+
 static void Ortho(float res[16],float left,float right, float bottom, float top,float nearVal,float farVal) {
     const float eps = 0.0001f;
     float Drl = (right-left);
@@ -276,12 +216,11 @@ static void Ortho(float res[16],float left,float right, float bottom, float top,
     res[15] = 1;
 }
 
-// custom replacement of gluLookAt(...)
 static void LookAt(float m[16],float eyeX,float eyeY,float eyeZ,float centerX,float centerY,float centerZ,float upX,float upY,float upZ)    {
     const float eps = 0.0001f;
 
     float F[3] = {eyeX-centerX,eyeY-centerY,eyeZ-centerZ};
-    float length = F[0]*F[0]+F[1]*F[1]+F[2]*F[2];	// length2 now
+    float length = F[0]*F[0]+F[1]*F[1]+F[2]*F[2];
     float up[3] = {upX,upY,upZ};
 
     float S[3] = {up[1]*F[2]-up[2]*F[1],up[2]*F[0]-up[0]*F[2],up[0]*F[1]-up[1]*F[0]};
@@ -336,67 +275,50 @@ static __inline void Vec3Cross(float rv[3],const float a[3],const float b[3]) {
 }
 
 
-float current_width=0,current_height=0,current_aspect_ratio=1;  // Not sure when I've used these...
+float current_width=0,current_height=0,current_aspect_ratio=1; 
 void ResizeGL(int w,int h) {
     current_width = (float) w;
     current_height = (float) h;
     if (current_height!=0) current_aspect_ratio = current_width/current_height;
     if (h>0)	{
-        // We set our pMatrix here in ResizeGL(), and we must notify teapot.h about it too.
-        Perspective(pMatrix,pMatrixFovDeg,(float)w/(float)h,pMatrixNearPlane,pMatrixFarPlane);
+
+		Perspective(pMatrix,pMatrixFovDeg,(float)w/(float)h,pMatrixNearPlane,pMatrixFarPlane);
         Teapot_SetProjectionMatrix(pMatrix);
     }
 
-    if (h>0) Dynamic_Resolution_Resize(w,h);    // The dynamic resolution texture (and the shadow map) change their size with this call
+    if (h>0) Dynamic_Resolution_Resize(w,h);    
 
     if (w>0 && h>0 && !config.fullscreen_enabled) {
-        // On exiting we'll like to save these data back
-        config.windowed_width=w;
+
+		config.windowed_width=w;
         config.windowed_height=h;
     }
 
-    glViewport(0,0,w,h);    // This is what people often call in ResizeGL()
-
+    glViewport(0,0,w,h);    
 }
 
-// Since we have to draw the objects twice (for shadow mapping), it's better to store them in an array.
-// We're very lucky because teapot.h provides one for us!
-static Teapot_MeshData* allocated_memory = NULL;    // This is allocated in InitGL() and freed in DestroyGL()
-static Teapot_MeshData* pMeshData[35];              // This just points to parts of allocated_memory (to avoid multiple allocations)
+static Teapot_MeshData* allocated_memory = NULL;    
+static Teapot_MeshData* pMeshData[35];              
 static const int maxNumMeshData = sizeof(pMeshData)/sizeof(pMeshData[0]);
-static int numMeshData = 0; // initial value (see InitGL())
+static int numMeshData = 0; 
 static Teapot_MeshData* pAnimatedMeshData0 = NULL;
 static Teapot_MeshData* pAnimatedMeshData1 = NULL;
 
 
 #ifdef TEST_ADD_USER_MESH
-// defined at the bottom
 extern void Teapot_Init_User_Mesh_Callback(TeapotMeshEnum meshId,const float** ppverts,int* numVerts,const unsigned short** ppinds,int* numInds);
 #endif
-
-/*#define NUM_COLORS 10
-static float Colors[NUM_COLORS][3]={
-{0.4f,0.4f,0.f},
-{0.2f,0.7f,0.4f},
-{0.8f,0.2f,0.2f},
-{0.4f,1.0f,0.2f},
-{0.2f,0.4f,1.f},
-{1.0f,0.4f,0.4f},
-{1.0f,1.f,0.4f},
-{0.8f,0.2f,0.8f},
-{0.5f,0.7f,1.0f},
-{0.65f,0.65f,0.65f}
-};*/
-
 
 void InitGL(void) {
 
     // IMPORTANT CALL--------------------------------------------------------
     Dynamic_Resolution_Init(config.dynamic_resolution_target_fps,config.dynamic_resolution_enabled);
     //-----------------------------------------------------------------------
+
 #   ifdef TEST_ADD_USER_MESH
-    Teapot_Set_Init_UserMeshCallback(&Teapot_Init_User_Mesh_Callback);  // if used must be called BEFORE Teapot_Init()
+    Teapot_Set_Init_UserMeshCallback(&Teapot_Init_User_Mesh_Callback);  
 #   endif
+
     // IMPORTANT CALL--------------------------------------------------------
     Teapot_Init();
     //-----------------------------------------------------------------------
@@ -404,43 +326,39 @@ void InitGL(void) {
     // These are important, but often overlooked OpenGL calls
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  // Otherwise transparent objects are not displayed correctly
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
     glClearColor(0.3f, 0.6f, 1.0f, 1.0f); //BACKGROUND
-    glEnable(GL_TEXTURE_2D);    // Only needed for ffp, when VISUALIZE_DEPTH_TEXTURE is defined
+    glEnable(GL_TEXTURE_2D);    
 
 #   ifdef TEAPOT_SHADER_FOG
-    // We use fog to prevent ad clipping artifacts, so it just needs the near and far plane
-    Teapot_SetFogDistances((pMatrixFarPlane-pMatrixNearPlane)*0.5f,pMatrixFarPlane); // We start the fog at the half point... but it works better nearer when farPlane is far away
-    Teapot_SetFogColor(0.3f, 0.6f, 1.0f); // it should be the same as glClearColor()
+
+	Teapot_SetFogDistances((pMatrixFarPlane-pMatrixNearPlane)*0.5f,pMatrixFarPlane);
+    Teapot_SetFogColor(0.3f, 0.6f, 1.0f); 
 #   endif
 
 #   ifdef TEAPOT_SHADER_USE_SHADOW_MAP
-    Teapot_SetShadowDarkening(40.f,0.75f);  // First number makes the shadow darker in an uniform way, the second clamps the lower intensity: (40.f,0.75f) default, (0.f,...) -> no shadows
-#   endif //TEAPOT_SHADER_USE_SHADOW_MAP
+    Teapot_SetShadowDarkening(40.f,0.75f);
+#   endif
 
-    // This line can change the look of the demo considerably. Try commenting it out!
     Teapot_Enable_ColorMaterial();    // Optional (Teapot_SetColor(...) internally calls Teapot_SetColorAmbient(...); and Teapot_SetColorSpecular(...); when enabled)
     // The truth is that for every object it's tedious to setup 3 colors (even if we'd get better visuals): so this definition is useful.
 
-    // Warning: in this demo we know that the calling order of the callbacks is: InitGL(),ResizeGL(...),DrawGL().
-    // That's why we can avoid calling ResizeGL(...) here
-    // However in other demos it might be mandatory to call ResizeGL(...) here
 
-    // Allocate meshes
     {
         int i;
         allocated_memory = (Teapot_MeshData*) malloc(maxNumMeshData*sizeof(Teapot_MeshData));
         for (i=0;i<maxNumMeshData;i++) {
-            pMeshData[i] = &allocated_memory[i];    // Mandatory Assignment (to split our allocated memory)
-            Teapot_MeshData_Clear(pMeshData[i]);    // Reset
+            pMeshData[i] = &allocated_memory[i];    
+            Teapot_MeshData_Clear(pMeshData[i]);    
         }
     }
-    // Initialize meshes
-    {
+
+	{
         float mMatrix[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
         int i;Teapot_MeshData* md;
-        //-----------------------------------------------------
-        i=0;
+
+		i=0;
+
         // Ground mesh (box)
         md = pMeshData[i++];
         mMatrix[12]=0.0;    mMatrix[13]=-0.25;    mMatrix[14]=0.0;
@@ -458,22 +376,22 @@ void InitGL(void) {
         Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TEAPOT);
         Teapot_MeshData_SetOutlineEnabled(md,0);
 
-        //// (bunny)
-        //md = pMeshData[i++];
-        //mMatrix[12]=-0.5;    mMatrix[13]=0.0;    mMatrix[14]=1.0;
-        //Teapot_MeshData_SetMMatrix(md,mMatrix);
-        //Teapot_MeshData_SetScaling(md,1.f,1.f,1.f);
-        //Teapot_MeshData_SetColor(md,0.2f,0.4f,0.9f,1.0f);
-        //Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_BUNNY);
-        //Teapot_MeshData_SetOutlineEnabled(md,0);
-
-        // (teapot)
+        // (bunny)
         md = pMeshData[i++];
-        mMatrix[12]=0.25;    mMatrix[13]=0.0;    mMatrix[14]=1.5;
+        mMatrix[12]=-0.5;    mMatrix[13]=0.0;    mMatrix[14]=1.0;
         Teapot_MeshData_SetMMatrix(md,mMatrix);
-        Teapot_MeshData_SetScaling(md,0.5f,0.5f,0.5f);
-        Teapot_MeshData_SetColor(md,0.8f,0.6f,0.2f,0.6f);
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TEAPOT);
+        Teapot_MeshData_SetScaling(md,1.f,1.f,1.f);
+        Teapot_MeshData_SetColor(md,0.2f,0.4f,0.9f,1.0f);
+        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_BUNNY);
+        Teapot_MeshData_SetOutlineEnabled(md,0);
+
+        //// (teapot)
+        //md = pMeshData[i++];
+        //mMatrix[12]=0.25;    mMatrix[13]=0.0;    mMatrix[14]=1.5;
+        //Teapot_MeshData_SetMMatrix(md,mMatrix);
+        //Teapot_MeshData_SetScaling(md,0.5f,0.5f,0.5f);
+        //Teapot_MeshData_SetColor(md,0.8f,0.6f,0.2f,0.6f);
+        //Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TEAPOT);
 
         // (ghost)
         pAnimatedMeshData1 = md = pMeshData[i++];   // stored for position animation in DrawGL()
@@ -481,7 +399,7 @@ void InitGL(void) {
         Teapot_MeshData_SetMMatrix(md,mMatrix);
         Teapot_MeshData_SetScaling(md,0.5f,0.5f,0.5f);
         Teapot_MeshData_SetColor(md,0.3f,0.5f,1.0f,0.5f);
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_GHOST);
+        Teapot_MeshData_SetMeshId(md, TEAPOT_MESH_BUNNY);
 
 //        // (character)
 //        md = pMeshData[i++];
@@ -495,21 +413,21 @@ void InitGL(void) {
 //        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CHARACTER);
 //#       endif
 
-        // (torus)
-        md = pMeshData[i++];
-        mMatrix[12]=0.3;    mMatrix[13]=0.0;    mMatrix[14]=0.5;
-        Teapot_MeshData_SetMMatrix(md,mMatrix);
-        Teapot_MeshData_SetScaling(md,1.f,1.5f,1.25f);
-        Teapot_MeshData_SetColor(md,0.5f,0.75f,1.0f,0.65f);
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TORUS);
+        //// (torus)
+        //md = pMeshData[i++];
+        //mMatrix[12]=0.3;    mMatrix[13]=0.0;    mMatrix[14]=0.5;
+        //Teapot_MeshData_SetMMatrix(md,mMatrix);
+        //Teapot_MeshData_SetScaling(md,1.f,1.5f,1.25f);
+        //Teapot_MeshData_SetColor(md,0.5f,0.75f,1.0f,0.65f);
+        //Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TORUS);
 
-        // (table)
-        md = pMeshData[i++];
-        Teapot_MeshData_SetScaling(md,0.6f,0.5f,0.5f);
-        Teapot_MeshData_SetColor(md,0.5f,0.2f,0.1f,1.0f);
-        mMatrix[12]=-1.25;   mMatrix[13]=0.0;    mMatrix[14]=-1.0;
-        Teapot_MeshData_SetMMatrix(md,mMatrix);
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TABLE);
+        //// (table)
+        //md = pMeshData[i++];
+        //Teapot_MeshData_SetScaling(md,0.6f,0.5f,0.5f);
+        //Teapot_MeshData_SetColor(md,0.5f,0.2f,0.1f,1.0f);
+        //mMatrix[12]=-1.25;   mMatrix[13]=0.0;    mMatrix[14]=-1.0;
+        //Teapot_MeshData_SetMMatrix(md,mMatrix);
+        //Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TABLE);
 
         //// (chairs)
         //{
@@ -539,21 +457,21 @@ void InitGL(void) {
         //    mMatrix[8]=-mMatrix[8];mMatrix[9]=-mMatrix[9];mMatrix[10]=-mMatrix[10];
         //}
 
-        // (teapot)
-        md = pMeshData[i++];
-        Teapot_MeshData_SetScaling(md,0.15f,0.15f,0.15f);
-        Teapot_MeshData_SetColor(md,0.4f,0.8f,0.2f,1.0f);
-        mMatrix[12]=-1.25;   mMatrix[13]=0.5;    mMatrix[14]=-1.0;
-        Teapot_MeshData_SetMMatrix(md,mMatrix);
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TEAPOT);
+        //// (teapot)
+        //md = pMeshData[i++];
+        //Teapot_MeshData_SetScaling(md,0.15f,0.15f,0.15f);
+        //Teapot_MeshData_SetColor(md,0.4f,0.8f,0.2f,1.0f);
+        //mMatrix[12]=-1.25;   mMatrix[13]=0.5;    mMatrix[14]=-1.0;
+        //Teapot_MeshData_SetMMatrix(md,mMatrix);
+        //Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_TEAPOT);
 
-        // (capsule)
-        md = pMeshData[i++];
-        Teapot_MeshData_SetScaling(md,0.25f,0.35f,0.25f);
-        Teapot_MeshData_SetColor(md,0.4f,0.8f,0.2f,1.0f);
-        mMatrix[12]=0.75;   mMatrix[13]=0.0;    mMatrix[14]=-1.5;
-        Teapot_MeshData_SetMMatrix(md,mMatrix);
-        Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CAPSULE);
+        //// (capsule)
+        //md = pMeshData[i++];
+        //Teapot_MeshData_SetScaling(md,0.25f,0.35f,0.25f);
+        //Teapot_MeshData_SetColor(md,0.4f,0.8f,0.2f,1.0f);
+        //mMatrix[12]=0.75;   mMatrix[13]=0.0;    mMatrix[14]=-1.5;
+        //Teapot_MeshData_SetMMatrix(md,mMatrix);
+        //Teapot_MeshData_SetMeshId(md,TEAPOT_MESH_CAPSULE);
 
         numMeshData = i;    // Well, we should check that numMeshData<maxNumMeshData
     }
@@ -561,8 +479,8 @@ void InitGL(void) {
 }
 
 void DestroyGL() {
-    // Deallocate memory
-    int i;
+
+	int i;
     if (allocated_memory) {free(allocated_memory);allocated_memory=NULL;}
     for (i=0;i<maxNumMeshData;i++) pMeshData[i]=NULL;
 
@@ -573,15 +491,14 @@ void DestroyGL() {
 }
 
 
-//#define TEST_DYN_RES_FOR_SHADOW_MAP   // This just works on my Ubuntu system by adding some wait time every frame to force dynamic resolution to trigger in
 #ifdef TEST_DYN_RES_FOR_SHADOW_MAP
-#include <unistd.h> // usleep
+#include <unistd.h> 
 #endif //TEST_DYN_RES_FOR_SHADOW_MAP
 
 void DrawGL(void) 
 {	
-    // We need to calculate the "instantFrameTime", because it's necessary to "dynamic_resolution.h"
-    static unsigned begin = 0;
+
+	static unsigned begin = 0;
     static unsigned cur_time = 0;
     unsigned elapsed_time,delta_time;
     if (begin==0) begin = glutGet(GLUT_ELAPSED_TIME);
@@ -592,7 +509,7 @@ void DrawGL(void)
 
     // view Matrix
     LookAt(vMatrix,cameraPos[0],cameraPos[1],cameraPos[2],targetPos[0],targetPos[1],targetPos[2],0,1,0);
-    Teapot_SetViewMatrixAndLightDirection(vMatrix,lightDirection);  // we must notify teapot.h, and we also pass the lightDirection here
+    Teapot_SetViewMatrixAndLightDirection(vMatrix,lightDirection);  
 
     // Animate some objects (
     {
@@ -602,106 +519,34 @@ void DrawGL(void)
         pAnimatedMeshData0->mMatrix[12] = 1.5f + 0.3f*s;
         pAnimatedMeshData0->mMatrix[14] = 0.5f + 1.25f*c;
 
-        pAnimatedMeshData1->mMatrix[12] = -1.5f + 0.5f*c;
-        pAnimatedMeshData1->mMatrix[14] = 1.f + 0.25f*s;
+		pAnimatedMeshData1->mMatrix[12] = c;
+		pAnimatedMeshData1->mMatrix[14] = c;
+
+        /*pAnimatedMeshData1->mMatrix[12] = -1.5f + 0.5f*c;
+        pAnimatedMeshData1->mMatrix[14] = 1.f + 0.25f*s;*/
     }
 
-    Teapot_MeshData_CalculateMvMatrixFromArray(pMeshData,numMeshData);  // This sets every Teapot_MeshData::mvMatrix
+    Teapot_MeshData_CalculateMvMatrixFromArray(pMeshData,numMeshData); 
 
 #   ifdef TEAPOT_SHADER_USE_SHADOW_MAP
-    // Draw to Shadow Map------------------------------------------------------------------------------------------
+    // Draw to Shadow Map
     {
-    // Note: we could just skip this if TEAPOT_SHADER_USE_SHADOW_MAP is not defined,
-    // but this part can still be done because it's part of "dynamic_resolution.h",
-    // and the shadow map texture can still be created and displayed.
-
-    // We're currently calculating all these matrices every frame. This is obviously wrong.
-    // Also: there's no fixed rule I know to calculate these matrices. Feel free to change them!
+   
     static float lpMatrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     static float lvMatrix[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    static float lvpMatrix[16]; // = light_pMatrix*light_vMatrix
-    //if (lpMatrix[0]==0)
+    static float lvpMatrix[16];
     {
-        // This changes with pMatrixFarPlane and pMatrixFovDeg
-        const float y = pMatrixFarPlane*tan(pMatrixFovDeg*3.1415/180.0)*0.5f;  // last coefficient is ad-hoc for this demo (in our case it should be 1.0, or maybe 0.5 for free roaming; something like 0.2 for fixed environment and MUCH better shadow quality!)
+
+		const float y = pMatrixFarPlane*tan(pMatrixFovDeg*3.1415/180.0)*0.5f; 
         const float x = y;
         Ortho(lpMatrix,-x,x,-y,y,pMatrixFarPlane*0.5f,-pMatrixFarPlane*0.5f);
-/* POSSIBLE IMPROVEMENTS (https://msdn.microsoft.com/en-us/library/windows/desktop/ee416324(v=vs.85).aspx):
- To calculate the projection, the eight points that make up the view
- frustum are transformed into light space. Next, the minimum and maximum
- values in X and Z are found. These values make up the bounds for an
- orthographic projection [-x,x,-y,y].
 
- For directional lights, the solution to the moving shadow edges problem is to round the minimum/maximum value in X and Y (that make up the orthographic projection bounds) to pixel size increments. This can be done with a divide operation, a floor operation, and a multiply.
-    vLightCameraOrthographicMin /= vWorldUnitsPerTexel;
-    vLightCameraOrthographicMin = XMVectorFloor( vLightCameraOrthographicMin );
-    vLightCameraOrthographicMin *= vWorldUnitsPerTexel;
-    vLightCameraOrthographicMax /= vWorldUnitsPerTexel;
-    vLightCameraOrthographicMax = XMVectorFloor( vLightCameraOrthographicMax );
-    vLightCameraOrthographicMax *= vWorldUnitsPerTexel;
-
- The vWorldUnitsPerTexel value is calculated by taking a bound of
- the view frustum, and dividing by the buffer size.
-
-        FLOAT fWorldUnitsPerTexel = fCascadeBound /
-        (float)m_CopyOfCascadeConfig.m_iBufferSize;
-        vWorldUnitsPerTexel = XMVectorSet( fWorldUnitsPerTexel, fWorldUnitsPerTexel, 						   	0.0f, 0.0f );
-
-Bounding the maximum size of the view frustum results in a looser fit for the orthographic projection.
-It is important to note that the texture is 1 pixel larger in width and height when using this technique. This keeps shadow coordinates from indexing outside of the shadow map.
-
-*/
-/*
-Building the matrix:
-
-How I'd go about the very simple case you have:
-You have an orthographic projection for your light-camera. So your frustum is just an Oriented Bounding Box (OBB). That means you can simply feed its world space coordinates (like the width and height) to glm::ortho().
-
-But how do you construct the OBB around the frustum?
-Good question. ;D
-
-Here's a simple approach:
-First determine the direction of your light (as a normalized vector). Now simply project every vertex of your main-camera's frustum onto that vector and find the nearest and furthest one (simply store the distances along the vector). Now subtract the two distances.
-Congratulations! You already have your OBB's depth (Z).
-Now repeat that process for the other two vectors. One pointing upwards or downwards (Y) and the other to the right or left (X) relative to your light-camera. Now you have your OBB's orientation (the three vectors) and dimensions. Now simply pass the OBB's dimensions to glm::ortho() and then transform the orthographic matrix so it has the same orientation as your OBB.
-You're done. :D
-
-Projecting a point onto a vector:
-This step is actually very easy. Just take the dot product between your vector and your point (both stored as vec3).
-Example code:
-
-float distance_on_vector = dot(p, vector);
-
-Vector should be normalized, because you need the world-space distance. You don't need the actual position of p in world space (you just need the projected length) to calculate the dimensions of the OBB. That's why the above code is enough.
-*/
-// https://gamedev.stackexchange.com/questions/73851/how-do-i-fit-the-camera-frustum-inside-directional-light-space
-/*
-    Calculate the 8 corners of the view frustum in world space. This can be done by using the inverse view-projection matrix to transform the 8 corners of the NDC cube (which in OpenGL is [‒1, 1] along each axis).
-
-    Transform the frustum corners to a space aligned with the shadow map axes. This would commonly be the directional light object's local space. (In fact, steps 1 and 2 can be done in one step by combining the inverse view-projection matrix of the camera with the inverse world matrix of the light.)
-
-    Calculate the bounding box of the transformed frustum corners. This will be the view frustum for the shadow map.
-
-    Pass the bounding box's extents to glOrtho or similar to set up the orthographic projection matrix for the shadow map.
-
-There are a couple caveats with this basic approach. First, the Z bounds for the shadow map will be tightly fit around the view frustum, which means that objects outside the view frustum, but between the view frustum and the light, may fall outside the shadow frustum. This could lead to missing shadows. To fix this, depth clamping can be enabled so that objects in front of the shadow frustum will be rendered with clamped Z instead of clipped. Alternatively, the Z-near of the shadow frustum can be pushed out to ensure any possible shadowers are included.
-
-The bigger issue is that this produces a shadow frustum that continuously changes size and position as the camera moves around. This leads to shadows "swimming", which is a very distracting artifact. In order to fix this, it's common to do the following additional two steps:
-
-    Fix the overall size of the frustum based on the longest diagonal of the camera frustum. This ensures that the camera frustum can fit into the shadow frustum in any orientation. Don't allow the shadow frustum to change size as the camera rotates.
-
-    Discretize the position of the frustum, based on the size of texels in the shadow map. In other words, if the shadow map is 1024×1024, then you only allow the frustum to move around in discrete steps of 1/1024th of the frustum size. (You also need to increase the size of the frustum by a factor of 1024/1023, to give room for the shadow frustum and view frustum to slip against each other.)
-
-If you do these, the shadow will remain rock solid in world space as the camera moves around. (It won't remain solid if the camera's FOV, near or far planes are changed, though.)
-
-As a bonus, if you do all the above, you're well on your way to implementing cascaded shadow maps, which are "just" a set of shadow maps calculated from the view frustum as above, but using different view frustum near and far plane values to place each shadow map.
-*/
     }
-    //if (lmvMatrix[15]==0)
-    {
-        // This changes with lightDirection, pMatrixFarPlane, targetPos (= camera target)
-        const float distance =  pMatrixFarPlane*0.1f;
-        const float shadowTargetPos[3] = {targetPos[0],0.f,targetPos[2]};   // We keep it at y=0
+
+	{
+
+		const float distance =  pMatrixFarPlane*0.1f;
+        const float shadowTargetPos[3] = {targetPos[0],0.f,targetPos[2]};
         const float lpos[3] = {shadowTargetPos[0]-lightDirection[0]*distance,
                                shadowTargetPos[1]-lightDirection[1]*distance,
                                shadowTargetPos[2]-lightDirection[2]*distance};
@@ -710,67 +555,32 @@ As a bonus, if you do all the above, you're well on your way to implementing cas
         Teapot_Helper_MultMatrix(lvpMatrix,lpMatrix,lvMatrix);
     }
 
-    // There is also a version that takes lpMatrix and lvMatrix and multiplies them
-    // and another version that takes lvpMatrix and its frustum planes and performs frustum culling
-    // (try it, but it's untested and probably slower in many cases)
     Teapot_HiLevel_DrawMulti_ShadowMap_Vp(pMeshData,numMeshData,lvpMatrix,0.5f);
-    // The HiLevel function above uses parts of dynamic_resolution_h too, but you can unwrap it and use low-level functions as well (see its code).
-
-    // Most noticebly, it wraps functions like:
-
-    // Dynamic_Resolution_Bind_Shadow();   // Binds the shadow map FBO and its shader program
-    // Teapot_LowLevel_BindVertexBufferObject();
-    // [...] Teapot_LowLevel_DrawElements(meshId);
-    // Teapot_LowLevel_UnbindVertexBufferObject();
-    // Dynamic_Resolution_Unbind_Shadow();
-
-    // And also it sets some uniforms to shaders in both dynamic_resolution_h and teapot_h
-    // And finally it also calls:
-    // glBindTexture(GL_TEXTURE_2D,Dynamic_Resolution_Get_Shadow_Texture_ID());    // For the 2nd part of the shadow map algorithm
     }
 #   endif //TEAPOT_SHADER_USE_SHADOW_MAP
 
-    // Render to framebuffer---------------------------------------------------------------------------------------
-    Dynamic_Resolution_Bind();  // This defaults to nothing if we don't use dynamic resolution (-> it's for free: we can draw inside it as usual)
+    // Render to framebuffer
+    Dynamic_Resolution_Bind(); 
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Teapot_PreDraw();
 
-    // We can add an aabb frame around any object
-    /*{
-        const Teapot_MeshData* md = pAnimatedMeshData0;
-        static float aabb[3];
-        Teapot_GetMeshAabbExtents(md->meshId,aabb);
-        Teapot_SetColor(0.4,0.4,0,1);
-        Teapot_SetScaling(aabb[0]*md->scaling[0],aabb[1]*md->scaling[1],aabb[2]*md->scaling[2]);
-        glLineWidth(4.f);
-        // Hp) We have already md->mvMatrix. We do have it, because we're calling Teapot_DrawMulti_Mv(...) below.
-        // Otherwise, we can just call Teapot_Draw(md->mMatrix,TEAPOT_MESHLINES_CUBE_EDGES),
-        // Or better we can move this snippet below Teapot_DrawMulti(pMeshData,numMeshData,1),
-        // because Teapot_DrawMulti(...) internally sets all the mvMatrices and then calls Teapot_DrawMulti_Mv(pMeshData,numMeshData,1).
-        Teapot_Draw_Mv(md->mvMatrix,TEAPOT_MESHLINES_CUBE_EDGES);
-    }*/
-
-    // We can add a pivot at the camera target point
+    // Add a pivot at the camera target point
     {
         static float mMatrix[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
         mMatrix[12]=targetPos[0];mMatrix[13]=targetPos[1];mMatrix[14]=targetPos[2];
-        Teapot_SetColor(0.5,0.5,0,1); // the color of the center of the pivot (and for the pivot mesh only there's a hack that transfers the brightness of this color to the whole mesh)
+        Teapot_SetColor(0.5,0.5,0,1); 
         Teapot_SetScaling(0.4,0.4,0.4);
-        // Tip: We can change the outline color/params with Teapot_Set_MeshOutline_XXX(...) methods
-        Teapot_Enable_MeshOutline();  // This does not work together with glDisable(GL_DEPTH_TEST);
+
+		Teapot_Enable_MeshOutline();  // This does not work together with glDisable(GL_DEPTH_TEST);
         //glDisable(GL_DEPTH_TEST);
         Teapot_Draw(mMatrix,TEAPOT_MESH_PIVOT3D);
-        //glEnable(GL_DEPTH_TEST);
-        Teapot_Disable_MeshOutline();
+
+		Teapot_Disable_MeshOutline();
     }
 
-    // Here we draw all our pMeshData
-    Teapot_DrawMulti_Mv(pMeshData,numMeshData,1);    // Here we don't use Teapot_DrawMulti(...) cause we got the MvMatrices already (see Teapot_MeshData_CalculateMvMatrixFromArray(pMeshData,numMeshData); above)
-                                                     // This way we could have used mvMatrices in the shadow map creation (we haven't done it AFAIR)
-                                                     // Please note that to handle transparent objects correctly, it can change the object order (see last argument). So to detect an object, just store pointers and don't realloc the initial buffer (see that we have maxNumMeshData>=numMeshData)
-
+    Teapot_DrawMulti_Mv(pMeshData,numMeshData,1);    
 
 #   ifdef TEAPOT_SHADER_USE_SHADOW_MAP
     glBindTexture(GL_TEXTURE_2D,0);
@@ -832,6 +642,7 @@ As a bonus, if you do all the above, you're well on your way to implementing cas
         glDepthMask(GL_TRUE);
     }
 #   endif //__EMSCRIPTEN__
+
 #   endif //VISUALIZE_DEPTH_TEXTURE
 
 #   ifdef TEST_DYN_RES_FOR_SHADOW_MAP
@@ -889,7 +700,7 @@ static void updateCameraPos() {
 }
 
 static void resetCamera() {
-    // You can set the initial camera position here through:
+    // set the initial camera position here through:
     targetPos[0]=0; targetPos[1]=0; targetPos[2]=0; // The camera target point
     cameraYaw = 2*M_PI;                             // The camera rotation around the Y axis
     cameraPitch = M_PI*0.125f;                      // The camera rotation around the XZ plane
@@ -986,9 +797,6 @@ void GlutMouse(int a,int b,int c,int d) {
 
 }
 
-// Note that we have used GlutFakeDrawGL() so that at startup
-// the calling order is: InitGL(),ResizeGL(...),DrawGL()
-// Also note that glutSwapBuffers() must NOT be called inside DrawGL()
 static void GlutDrawGL(void)		{DrawGL();glutSwapBuffers();}
 static void GlutIdle(void)			{glutPostRedisplay();}
 static void GlutFakeDrawGL(void) 	{glutDisplayFunc(GlutDrawGL);}
@@ -1068,12 +876,6 @@ int main(int argc, char** argv)
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-#ifndef __EMSCRIPTEN__
-    //glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
-#ifdef __FREEGLUT_STD_H__
-    glutSetOption ( GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION ) ;
-#endif //__FREEGLUT_STD_H__
-#endif //__EMSCRIPTEN__
 
     Config_Init(&config);
 #ifndef __EMSCRIPTEN__
@@ -1081,15 +883,13 @@ int main(int argc, char** argv)
 #endif //__EMSCRIPTEN__
 
     GlutCreateWindow();
-
-	obj.load("cube.obj");
+	//obj.load("cube.obj");
 
     //OpenGL info
     printf("\nGL Vendor: %s\n", glGetString( GL_VENDOR ));
     printf("GL Renderer : %s\n", glGetString( GL_RENDERER ));
     printf("GL Version (string) : %s\n",  glGetString( GL_VERSION ));
     printf("GLSL Version : %s\n", glGetString( GL_SHADING_LANGUAGE_VERSION ));
-    //printf("GL Extensions:\n%s\n",(char *) glGetString(GL_EXTENSIONS));
 
     printf("\nKEYS:\n");
     printf("AROW KEYS + PAGE_UP/PAGE_DOWN:\tmove camera (optionally with CTRL down)\n");
@@ -1101,8 +901,7 @@ int main(int argc, char** argv)
     printf("F2:\t\t\tdisplay FPS\n");
     printf("\n");
 
-    resetCamera();  // Mandatory
-
+    resetCamera();
     glutMainLoop();
 
 
@@ -1239,5 +1038,3 @@ void Teapot_Init_User_Mesh_Callback(TeapotMeshEnum meshId,const float** ppverts,
     }
 }
 #endif //TEST_ADD_USER_MESH
-
-
